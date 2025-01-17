@@ -1,18 +1,23 @@
 TARGET=chip
-SRCS=src/main.c src/ipv4.c src/source_route.c src/security.c src/option.c
+
+VPATH=src/ src/ipv4
+SRCS=$(shell find . -name *.c)
 OBJS=$(subst src,obj,$(subst .c,.o,$(SRCS)))
+
 INCLUDES=includes
 FLAGS=-Wall -Wextra -Werror -I $(INCLUDES)
 CC=gcc
 
-all: $(OBJS)
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
 	$(CC) $(OBJS) -o $(TARGET) $(FLAGS)
 
-$(OBJS): obj/%.o: src/%.c
+$(OBJS): obj/%.o: %.c
 	$(CC) -c $< -o $@ $(FLAGS)
 
 build:
-	mkdir -p obj
+	mkdir -p obj/ipv4
 
 clean:
 	rm -f $(TARGET)
