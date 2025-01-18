@@ -122,6 +122,7 @@ void ipv4header_set_destination(ipv4header_t* header,
                         uint32_t host);
 
 void ipv4header_from_bytes(uint8_t* buffer, ipv4header_t* header);
+void ipv4header_to_bytes(ipv4header_t* header, uint8_t* buffer);
 
 
 #endif

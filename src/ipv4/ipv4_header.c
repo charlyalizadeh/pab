@@ -385,3 +385,28 @@ void ipv4_from_bytes(uint8_t* buffer, ipv4header_t* header) {
     header->source = buffer[12] | buffer[13] << 8 || buffer[14] << 16 | buffer[15] << 24;
     header->destination = buffer[16] | buffer[17] << 8 || buffer[18] << 16 | buffer[19] << 24;
 }
+void ipv4header_to_bytes(ipv4header_t* header, uint8_t* buffer) {
+    size_t offset = 0;
+
+    offset = 0;
+    buffer[offset++] = header->version | (header->length << 4);
+    buffer[offset++] = header->type_of_service;
+    buffer[offset++] = header->total_length;
+    buffer[offset++] = header->total_length >> 8;
+    buffer[offset++] = header->identification;
+    buffer[offset++] = header->identification >> 8;
+    buffer[offset++] = header->flags | (header->fragment_offset << 3);
+    buffer[offset++] = header->fragment_offset >> 5;
+    buffer[offset++] = header->time_to_live;
+    buffer[offset++] = header->protocol;
+    buffer[offset++] = header->checksum;
+    buffer[offset++] = header->checksum >> 8;
+    buffer[offset++] = header->source;
+    buffer[offset++] = header->source >> 8;
+    buffer[offset++] = header->source >> 16;
+    buffer[offset++] = header->source >> 24;
+    buffer[offset++] = header->destination;
+    buffer[offset++] = header->destination >> 8;
+    buffer[offset++] = header->destination >> 16;
+    buffer[offset++] = header->destination >> 24;
+}

@@ -110,3 +110,6 @@ void ipv4option_from_bytes(uint8_t* buffer, ipv4option_t* option) {
         }
     }
 }
+void ipv4option_to_bytes(ipv4option_t* option, uint8_t* buffer) {
+    memcpy(buffer, option->buffer, option->length);
+}

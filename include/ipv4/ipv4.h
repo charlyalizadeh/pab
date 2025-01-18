@@ -5,15 +5,15 @@
 #include "ipv4_option.h"
 
 
-/* Building the buffer */
-void ipv4_build_bytes(ipv4header_t* header,
-                      ipv4option_t* option,
-                      uint8_t* data,
-                      uint64_t data_length,
-                      uint8_t* buffer);
-void ipv4_from_bytes(uint8_t* buffer,
-                     ipv4header_t* header,
-                     ipv4option_t* option);
+typedef struct {
+    ipv4header_t header;
+    ipv4option_t option;
+    uint8_t* data;
+    size_t data_length;
+} ipv4_t;
+
+void ipv4_build_bytes(ipv4_t* ipv4, uint8_t* buffer);
+void ipv4_from_bytes(uint8_t* buffer, ipv4_t* ipv4);
 
 
 #endif
