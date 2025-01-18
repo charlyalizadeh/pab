@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 #include <stdio.h>
+#include <string.h>
 #include "security.h"
 #include "source_route.h"
 
@@ -22,6 +23,7 @@ uint8_t ipv4option_push_sr(ipv4option_t* option, ipv4option_sr_t* sr);
 uint8_t ipv4option_push_stream_id(ipv4option_t* option, uint16_t stream_id);
 uint8_t ipv4option_push_internet_timestamp(ipv4option_t* option, uint8_t length, uint8_t flag);
 uint8_t ipv4option_pop_option(ipv4option_t* option);
+void ipv4option_from_bytes(uint8_t* buffer, ipv4option_t* option);
 
 
 #endif
