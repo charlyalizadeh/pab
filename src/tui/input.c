@@ -46,8 +46,6 @@ int set_input(input_state_t* input_state, char* new_input) {
     memcpy(input_state->input, new_input, length + 1);
     memset(input_state->input + length + 1, 0, input_state->length_limit - length);
     input_state->length = length;
-    if(input_state->cursor_pos > length + 1)
-        input_state->cursor_pos = length + 1;
     return 1;
 }
 void insert_char(input_state_t* input_state, char c) {
@@ -122,6 +120,8 @@ void switch_mode_down(input_state_t* input_state) {
         default:
             break;
     }
+    if(input_state->cursor_pos > input_state->length)
+        input_state->cursor_pos = input_state->length;
 }
 void draw_mode(int y, int x, input_state_t* input_state) {
     WINDOW *w;

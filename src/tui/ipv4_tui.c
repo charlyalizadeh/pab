@@ -175,15 +175,15 @@ void ipv4_tui_draw(ipv4tui_state_t* state) {
         mvwprintw(w, mid_row - 6 + i, mid_col - 27, format, ":");
         switch(state->mode) {
             case BINARY:
-                mvwprintw_bin(w, mid_row - 6 + i, mid_col, state->values[i], state->bitlen[i], state->split);
+                mvwprintw_bin(w, mid_row - 6 + i, mid_col - 7, state->values[i], state->bitlen[i], state->split);
                 break;
             case HEXADECIMAL:
                 size = state->bitlen[i] / 4;
                 size += (size % 2) * (state->bitlen[i] % 4);
-                mvwprintw_hex(w, mid_row - 6 + i, mid_col, state->values[i], size, state->split);
+                mvwprintw_hex(w, mid_row - 6 + i, mid_col - 7, state->values[i], size, state->split);
                 break;
             case DECIMAL:
-                mvwprintw(w, mid_row - 6 + i, mid_col, "%lld", state->values[i]);
+                mvwprintw(w, mid_row - 6 + i, mid_col - 7, "%lld", state->values[i]);
                 break;
             default:
                 break;
