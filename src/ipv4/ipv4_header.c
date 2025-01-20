@@ -389,13 +389,13 @@ void ipv4header_to_bytes(ipv4header_t* header, uint8_t* buffer) {
     size_t offset = 0;
 
     offset = 0;
-    buffer[offset++] = header->version << 4 | header->length;
+    buffer[offset++] = (header->version << 4) | header->length;
     buffer[offset++] = header->type_of_service;
     buffer[offset++] = header->total_length >> 8;
     buffer[offset++] = header->total_length;
     buffer[offset++] = header->identification >> 8;
     buffer[offset++] = header->identification;
-    buffer[offset++] = header->flags << 5 | header->fragment_offset >> 8;
+    buffer[offset++] = (header->flags << 5) | (header->fragment_offset >> 8);
     buffer[offset++] = header->fragment_offset;
     buffer[offset++] = header->time_to_live;
     buffer[offset++] = header->protocol;
