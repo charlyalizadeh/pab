@@ -5,4 +5,4 @@ The TUI uses ncurses.
 
 # Video
 
-![](/static/pab_video.mp4)
+![](https://github.com/charlyalizadeh/pab/blob/master/static/pab_video.mp4)
