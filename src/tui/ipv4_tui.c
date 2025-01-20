@@ -15,6 +15,20 @@ static void init_values(ipv4header_t* ipv4header, unsigned long long values[12])
     values[10] = ipv4header->source;
     values[11] = ipv4header->destination;
 }
+static void ipv4_tui_build_ipv4(unsigned long long values[12], ipv4header_t* ipv4header) {
+    ipv4header->version = values[0];
+    ipv4header->length = values[1];
+    ipv4header->type_of_service = values[2];
+    ipv4header->total_length = values[3];
+    ipv4header->identification = values[4];
+    ipv4header->flags = values[5];
+    ipv4header->fragment_offset = values[6];
+    ipv4header->time_to_live = values[7];
+    ipv4header->protocol = values[8];
+    ipv4header->checksum = values[9];
+    ipv4header->source = values[10];
+    ipv4header->destination = values[11];
+}
 void ipv4_tui_input_value(ipv4tui_state_t* state) {
     uint64_t new_value;
     size_t width;
@@ -85,6 +99,10 @@ int ipv4_tui_update(ipv4tui_state_t* state) {
         else
             state->current--;
     }
+    else if(key == 's') {
+        wclear(state->window);
+        ipv4_tui_save(state);
+    }
     else if(key == KEY_ENTER || key == KEY_IL || key == 13 || key == 10) {
         wclear(state->window);
         ipv4_tui_input_value(state);
@@ -111,6 +129,31 @@ void ipv4_tui_draw_mode(ipv4tui_state_t* state) {
         default:
             break;
     }
+}
+void ipv4_tui_save(ipv4tui_state_t* state) {
+    ipv4_t ipv4;
+    char* path;
+    uint8_t* bytes;
+    size_t nbytes;
+    size_t width;
+
+    ipv4_init(&ipv4);
+    ipv4_tui_build_ipv4(state->values, &ipv4.header);
+    width = 50;
+    path = chui_input_str(stdscr,
+                          state->row / 2,
+                          state->col / 2 - width / 2,
+                          width,
+                          "Save path",
+                          "",
+                          width,
+                          0,
+                          ALL);
+    bytes = malloc(ipv4.header.length * sizeof(uint8_t));
+    ipv4_build_bytes(&ipv4, bytes);
+    write_bytes(path, bytes, ipv4.header.length * 4);
+    free(path);
+    free(bytes);
 }
 void ipv4_tui_draw(ipv4tui_state_t* state) {
     WINDOW* w;
@@ -151,6 +194,7 @@ void ipv4_tui_draw(ipv4tui_state_t* state) {
         }
     }
     ipv4_tui_draw_mode(state);
+    mvwprintw(w, mid_row + 9, mid_col - 21, "Press S to save");
 }
 void ipv4_tui(WINDOW* window, uint8_t* bytes) {
     ipv4_t ipv4;

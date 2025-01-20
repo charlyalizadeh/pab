@@ -7,6 +7,7 @@
 
 
 uint8_t* read_bytes(char* path);
+void write_bytes(char* path, uint8_t* bytes, size_t n);
 
 
 #endif

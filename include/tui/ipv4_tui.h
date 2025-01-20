@@ -5,8 +5,9 @@
 #include <stdint.h>
 #include <ncurses.h>
 #include "draw.h"
-#include "../ipv4/ipv4.h"
 #include "input.h"
+#include "../utils/file.h"
+#include "../ipv4/ipv4.h"
 
 
 typedef struct {
@@ -22,6 +23,7 @@ typedef struct {
 
 void ipv4_tui_input_value(ipv4tui_state_t* state);
 void ipv4_tui_draw_mode(ipv4tui_state_t* state);
+void ipv4_tui_save(ipv4tui_state_t* state);
 int ipv4_tui_update(ipv4tui_state_t* state);
 void ipv4_tui_draw(ipv4tui_state_t* state);
 void ipv4_tui(WINDOW *window, uint8_t *bytes);

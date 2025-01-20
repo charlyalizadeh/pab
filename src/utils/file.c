@@ -17,3 +17,10 @@ uint8_t* read_bytes(char* path) {
     fclose(fileptr);
     return buffer;
 }
+void write_bytes(char* path, uint8_t* buffer, size_t n) {
+    FILE *fileptr;
+
+    fileptr = fopen(path, "wb");
+    fwrite(buffer, 1, n, fileptr);
+    fclose(fileptr);
+}
