@@ -2,6 +2,11 @@
 
 
 
+void ipv4_init(ipv4_t* ipv4) {
+    ipv4->data_length = 0;
+    ipv4header_init(&ipv4->header);
+    ipv4option_init(&ipv4->option);
+}
 /* Building the buffer */
 void ipv4_build_bytes(ipv4_t* ipv4, uint8_t* buffer) {
     ipv4header_t* header;
@@ -17,5 +22,8 @@ void ipv4_build_bytes(ipv4_t* ipv4, uint8_t* buffer) {
 }
 void ipv4_from_bytes(uint8_t* buffer, ipv4_t* ipv4) {
     ipv4header_from_bytes(buffer, &ipv4->header);
-    ipv4option_from_bytes(buffer, &ipv4->option);
+    //if(ipv4->header.length <= 20)
+    //    ipv4option_init(&ipv4->option);
+    //else
+    //    ipv4option_from_bytes(buffer, &ipv4->option);
 }

@@ -5,28 +5,28 @@
 void ipv4header_tosp2str(enum IPv4TOSPrecedence precedence, char* str) {
     switch(precedence) {
         case NetworkControl:
-            memcpy(str, "NetworkControl", 14);
+            memcpy(str, "NetworkControl", 7);
             break;
         case InternetworkControl:
-            memcpy(str, "InternetworkControl", 19);
+            memcpy(str, "InternetworkControl", 6);
             break;
         case CRITIC:
-            memcpy(str, "CRITIC", 6);
+            memcpy(str, "CRITIC", 5);
             break;
         case FlashOverride:
-            memcpy(str, "FlashOverride", 13);
+            memcpy(str, "FlashOverride", 4);
             break;
         case Flash:
-            memcpy(str, "Flash", 5);
+            memcpy(str, "Flash", 3);
             break;
         case Immediate:
-            memcpy(str, "Immediate", 9);
+            memcpy(str, "Immediate", 2);
             break;
         case Priority:
-            memcpy(str, "Priority", 8);
+            memcpy(str, "Priority", 1);
             break;
         case Routine:
-            memcpy(str, "Routine", 7);
+            memcpy(str, "Routine", 0);
             break;
     }
 }
@@ -154,27 +154,27 @@ void ipv4header_set_version(ipv4header_t* header, uint8_t version) {
 
 /* Type of service */
 void ipv4header_set_type_of_service_precedence(ipv4header_t* header, enum IPv4TOSPrecedence type_of_service) {
-    // Set the precedence bits to 0 (248 = 1111 1000)
-    header->type_of_service &= 248; 
+    // Set the precedence bits to 0 (0x1F = 0001 1111)
+    header->type_of_service &= 0x1F; 
     header->type_of_service |= type_of_service;  
 }
 void ipv4header_set_type_of_service_delay(ipv4header_t* header, uint8_t delay) {
     if(delay)
-        header->type_of_service |= 1 << 3;
-    else
-        header->type_of_service &= ~(1 << 3);
-}
-void ipv4header_set_type_of_service_throughput(ipv4header_t* header, uint8_t throughput) {
-    if(throughput)
         header->type_of_service |= 1 << 4;
     else
         header->type_of_service &= ~(1 << 4);
 }
+void ipv4header_set_type_of_service_throughput(ipv4header_t* header, uint8_t throughput) {
+    if(throughput)
+        header->type_of_service |= 1 << 3;
+    else
+        header->type_of_service &= ~(1 << 3);
+}
 void ipv4header_set_type_of_service_relibility(ipv4header_t* header, uint8_t relibility) {
     if(relibility)
-        header->type_of_service |= 1 << 5;
+        header->type_of_service |= 1 << 2;
     else
-        header->type_of_service &= ~(1 << 5);
+        header->type_of_service &= ~(1 << 2);
 }
 
 /* Identification */
@@ -195,9 +195,9 @@ void ipv4header_set_flags_MF(ipv4header_t* header, uint8_t MF) {
     if(MF != 0 && MF != 1)
         return;
     if(MF)
-        header->flags |= 1 << 2;
+        header->flags |= 1;
     else
-        header->flags &= ~(1 << 2);
+        header->flags &= ~1;
 }
 
 /* Fragment Offset */
@@ -219,7 +219,7 @@ void ipv4header_set_protocol(ipv4header_t* header, enum IPv4Protocol protocol) {
 uint16_t ipv4header_get_16bit(ipv4header_t* header, uint8_t index) {
     switch(index) {
         case 0:
-            return header->type_of_service << 8 | header->length << 4 | header->version;
+            return header->version << 12 | header->length << 8 | header->type_of_service;
             break;
         case 1:
             return header->total_length;
@@ -228,22 +228,22 @@ uint16_t ipv4header_get_16bit(ipv4header_t* header, uint8_t index) {
             return header->identification;
             break;
         case 3:
-            return header->fragment_offset << 3 | header->flags;
+            return header->flags << 13 | header->fragment_offset;
             break;
         case 4:
-            return header->protocol << 8 | header->time_to_live;
+            return header->time_to_live << 8| header->protocol;
             break;
         case 5:
-            return header->source;
-            break;
-        case 6:
             return header->source >> 16;
             break;
+        case 6:
+            return header->source & 0xFFFF;
+            break;
         case 7:
-            return header->destination;
+            return header->destination >> 16;
             break;
         case 8:
-            return header->destination >> 16;
+            return header->destination & 0xFFFF;
             break;
     }
     return 0;
@@ -370,43 +370,43 @@ void ipv4header_set_destination(ipv4header_t* header,
     ipv4header_set_address_format(&header->destination, format);
 }
 
-void ipv4_from_bytes(uint8_t* buffer, ipv4header_t* header) {
+void ipv4header_from_bytes(uint8_t* buffer, ipv4header_t* header) {
     ipv4header_init(header);
-    header->version = buffer[0] & 0x0F;
-    header->length = buffer[0] & 0xF0;
+    header->version = (buffer[0] & 0xF0) >> 4;
+    header->length = buffer[0] & 0x0F;
     header->type_of_service = buffer[1];
-    header->total_length = buffer[2] | ((uint16_t)buffer[3]) << 8;
-    header->identification = buffer[4] | ((uint16_t)buffer[5]) << 8;
-    header->flags = buffer[6] & 0x7;
-    header->fragment_offset = buffer[6] >> 3 | buffer[7];
+    header->total_length = ((uint16_t)buffer[2] << 8) | buffer[3];
+    header->identification = ((uint16_t)buffer[4] << 8) | buffer[5];
+    header->flags = buffer[6] >> 5;
+    header->fragment_offset = (((uint16_t)buffer[6] & 0x1F) << 8) | buffer[7];
     header->time_to_live = buffer[8];
     header->protocol = buffer[9];
-    header->checksum = buffer[10] | buffer[11] << 8;
-    header->source = buffer[12] | buffer[13] << 8 || buffer[14] << 16 | buffer[15] << 24;
-    header->destination = buffer[16] | buffer[17] << 8 || buffer[18] << 16 | buffer[19] << 24;
+    header->checksum = (buffer[10] << 8) | buffer[11];
+    header->source = buffer[12] << 24 | buffer[13] << 16 | buffer[14] << 8 | buffer[15];
+    header->destination = buffer[16] << 24 | buffer[17] << 16 | buffer[18] << 8 | buffer[19];
 }
 void ipv4header_to_bytes(ipv4header_t* header, uint8_t* buffer) {
     size_t offset = 0;
 
     offset = 0;
-    buffer[offset++] = header->version | (header->length << 4);
+    buffer[offset++] = header->version << 4 | header->length;
     buffer[offset++] = header->type_of_service;
-    buffer[offset++] = header->total_length;
     buffer[offset++] = header->total_length >> 8;
-    buffer[offset++] = header->identification;
+    buffer[offset++] = header->total_length;
     buffer[offset++] = header->identification >> 8;
-    buffer[offset++] = header->flags | (header->fragment_offset << 3);
-    buffer[offset++] = header->fragment_offset >> 5;
+    buffer[offset++] = header->identification;
+    buffer[offset++] = header->flags << 5 | header->fragment_offset >> 8;
+    buffer[offset++] = header->fragment_offset;
     buffer[offset++] = header->time_to_live;
     buffer[offset++] = header->protocol;
-    buffer[offset++] = header->checksum;
     buffer[offset++] = header->checksum >> 8;
-    buffer[offset++] = header->source;
-    buffer[offset++] = header->source >> 8;
-    buffer[offset++] = header->source >> 16;
+    buffer[offset++] = header->checksum;
     buffer[offset++] = header->source >> 24;
-    buffer[offset++] = header->destination;
-    buffer[offset++] = header->destination >> 8;
-    buffer[offset++] = header->destination >> 16;
+    buffer[offset++] = header->source >> 16;
+    buffer[offset++] = header->source >> 8;
+    buffer[offset++] = header->source;
     buffer[offset++] = header->destination >> 24;
+    buffer[offset++] = header->destination >> 16;
+    buffer[offset++] = header->destination >> 8;
+    buffer[offset++] = header->destination;
 }

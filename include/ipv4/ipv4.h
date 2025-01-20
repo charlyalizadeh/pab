@@ -12,6 +12,7 @@ typedef struct {
     size_t data_length;
 } ipv4_t;
 
+void ipv4_init(ipv4_t* ipv4);
 void ipv4_build_bytes(ipv4_t* ipv4, uint8_t* buffer);
 void ipv4_from_bytes(uint8_t* buffer, ipv4_t* ipv4);
 
