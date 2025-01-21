@@ -1,4 +1,4 @@
-TARGET=chip
+TARGET=bin/pab
 
 VPATH=src/
 SRCS=$(shell find . -name *.c)
@@ -26,5 +26,8 @@ clean:
 
 fclean: clean
 	rm -f obj/*.o
+	rm -f obj/ipv4/*.o
+	rm -f obj/tui/*.o
+	rm -f obj/utils/*.o
 
 re: fclean all
