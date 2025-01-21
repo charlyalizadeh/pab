@@ -53,6 +53,7 @@ void main_menu(void) {
         buffer = read_bytes(packet_path);
         if(!buffer)
             return;
+        break;
     }
     /* Protocol */
     protocol = chui_select(stdscr, row / 2, col / 2 - 4, "Select protocol", (char*[3]){"IPv4", "TCP", "UDP"}, 3);
