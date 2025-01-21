@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 
 unsigned long long get_max_base(size_t base_len, int ndigit);
@@ -11,6 +12,7 @@ void get_basemap(char* base, size_t base_len, int basemap[255]);
 char* dec2base(unsigned long long in, int size, char* base, size_t baselen);
 char* dec2hex(unsigned long long in, int size);
 char* dec2bin(unsigned long long in, int size);
+char* dec2dec(unsigned long long in, int size);
 
 
 #endif

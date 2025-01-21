@@ -67,3 +67,6 @@ char* dec2hex(unsigned long long in, int size) {
 char* dec2bin(unsigned long long in, int size) {
     return dec2base(in, size, "01", 2);
 }
+char* dec2dec(unsigned long long in, int size) {
+    return dec2base(in, size, "0123456789", 10);
+}

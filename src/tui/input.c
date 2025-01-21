@@ -107,9 +107,9 @@ void switch_mode_down(input_state_t* input_state) {
             if(input_state->length == 0)
                 break;
             value = strtoull(input_state->input, NULL, 16);
-            temp = malloc((input_state->length_limit + 1) * sizeof(char));
-            snprintf(temp, input_state->length_limit + 1, "%lld", value);
+            temp = dec2dec(value, -1);
             set_input(input_state, temp);
+            free(temp);
             break;
         case DECIMAL:
             input_state->mode = BINARY;
@@ -193,13 +193,13 @@ void draw_base_convertion(int y, int x, input_state_t* input_state) {
                 mvwprintw(w, y + 5, x, "Hex: ERROR");
             else {
                 mvwprintw(w, y + 5, x, "Hex: 0x%s", hex);
-                //free(hex);
+                free(hex);
             }
             if(!bin)
                 mvwprintw(w, y + 6, x, "Bin: ERROR");
             else {
                 mvwprintw(w, y + 6, x, "Bin: %s", bin);
-                //free(bin);
+                free(bin);
             }
             break;
         case ALL:
@@ -261,7 +261,7 @@ int chui_input_update(input_state_t* input_state) {
     else if(key == KEY_ENTER || key == KEY_IL || key == 13 || key == 10)
         return 0;
     else if(key == KEY_EXIT || key == 27) {
-        memcpy(input_state->input, input_state->original_input, input_state->length);
+        memcpy(input_state->input, input_state->original_input, input_state->length_limit);
         return 0;
     }
     else if(key >= 32 && key <= 126 && input_state->length < 99) {
