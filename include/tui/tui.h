@@ -4,6 +4,7 @@
 #include <ncurses.h>
 #include <locale.h>
 #include <string.h>
+#include <unistd.h>
 #include "input.h"
 #include "select.h"
 #include "../ipv4/ipv4.h"

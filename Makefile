@@ -5,8 +5,7 @@ SRCS=$(shell find . -name *.c)
 OBJS=$(subst src,obj,$(subst .c,.o,$(SRCS)))
 
 INCLUDES=includes
-#FLAGS=-Wall -Wextra -Werror -lncursesw -I $(INCLUDES)
-FLAGS=-lncursesw -I $(INCLUDES)
+FLAGS=-Wall -Wextra -Werror -lncursesw -I $(INCLUDES)
 CC=gcc
 
 all: $(TARGET)

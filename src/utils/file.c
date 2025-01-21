@@ -8,6 +8,8 @@ uint8_t* read_bytes(char* path) {
     long filelen;
 
     fileptr = fopen(path, "rb");
+    if(!fileptr)
+        return NULL;
     fseek(fileptr, 0, SEEK_END);
     filelen = ftell(fileptr);
     rewind(fileptr);
@@ -21,6 +23,8 @@ void write_bytes(char* path, uint8_t* buffer, size_t n) {
     FILE *fileptr;
 
     fileptr = fopen(path, "wb");
+    if(!fileptr)
+        return;
     fwrite(buffer, 1, n, fileptr);
     fclose(fileptr);
 }

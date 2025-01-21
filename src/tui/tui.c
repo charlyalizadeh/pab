@@ -37,10 +37,23 @@ void main_menu(void) {
 
     /* Packet path */
     title = "Path to packet";
-    packet_path = chui_input_str(stdscr, row / 2, col / 2 - width / 2, width, title, "", width, 0, ALL);
-    if(!packet_path)
-        return;
-    buffer = read_bytes(packet_path);
+    while(1) {
+        packet_path = chui_input_str(stdscr, row / 2, col / 2 - width / 2, width, title, "", width, 0, ALL);
+        if(!packet_path)
+            return;
+        if(access(packet_path, F_OK) != 0) {
+            clear();
+            mvprintw(row / 2, col / 2 - 46 / 2, "File not found. Please enter a valid file path.");
+            mvprintw(row / 2 + 1, col / 2 - 25 / 2, "(Press a key to continue)");
+            free(packet_path);
+            getch();
+            clear();
+            continue;
+        }
+        buffer = read_bytes(packet_path);
+        if(!buffer)
+            return;
+    }
     /* Protocol */
     protocol = chui_select(stdscr, row / 2, col / 2 - 4, "Select protocol", (char*[3]){"IPv4", "TCP", "UDP"}, 3);
     start_packet(buffer, protocol);
