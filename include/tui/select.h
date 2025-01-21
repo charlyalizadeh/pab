@@ -5,6 +5,7 @@
 #include <ncurses.h>
 #include <stdlib.h>
 #include <string.h>
+#include "../utils/str.h"
 
 
 typedef struct {

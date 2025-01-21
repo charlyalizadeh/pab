@@ -1,18 +1,6 @@
 #include "../../include/tui/select.h"
 
 
-static size_t longest_str(char** items, size_t length) {
-    size_t result;
-    size_t current_length;
-
-    result = 0;
-    for(size_t i = 0; i < length; i++) {
-        current_length = strlen(items[i]);
-        if(result < current_length)
-            result = current_length;
-    }
-    return result;
-}
 int update_select(select_state_t* select_state) {
     int key;
 
@@ -69,7 +57,7 @@ int chui_select(WINDOW* window,
     select_state.items = items;
     select_state.length = length;
     select_state.current = length / 2;
-    width = longest_str(items, length);
+    width = strslenmax(items, length);
     stop = 1;
     while(stop) {
         draw_select(y, x, width, &select_state);
