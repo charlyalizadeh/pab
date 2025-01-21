@@ -10,10 +10,10 @@ void ipv4_init(ipv4_t* ipv4) {
 /* Building the buffer */
 void ipv4_build_bytes(ipv4_t* ipv4, uint8_t* buffer) {
     ipv4header_t* header;
-    ipv4option_t* option;
+    //ipv4option_t* option;
 
     header = &ipv4->header;
-    option = &ipv4->option;
+    //option = &ipv4->option;
     //header->length = 20 + option->length;
     header->checksum = ipv4header_compute_header_checksum(header);
     ipv4header_to_bytes(header, buffer);

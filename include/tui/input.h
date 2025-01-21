@@ -22,7 +22,7 @@ typedef struct {
 } input_state_t;
 
 /* Utils */
-unsigned long long get_input_value(char* str, size_t len, enum InputMode mode);
+unsigned long long get_input_value(char* str, enum InputMode mode);
 void clean_input(input_state_t* input_state);
 char* copy_input(input_state_t* input_state);
 

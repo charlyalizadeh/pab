@@ -30,7 +30,6 @@ static void ipv4_tui_build_ipv4(unsigned long long values[12], ipv4header_t* ipv
     ipv4header->destination = values[11];
 }
 void ipv4_tui_input_value(ipv4tui_state_t* state) {
-    uint64_t new_value;
     size_t width;
     char* init;
     size_t size;
@@ -134,7 +133,6 @@ void ipv4_tui_save(ipv4tui_state_t* state) {
     ipv4_t ipv4;
     char* path;
     uint8_t* bytes;
-    size_t nbytes;
     size_t width;
 
     ipv4_init(&ipv4);
@@ -167,7 +165,7 @@ void ipv4_tui_draw(ipv4tui_state_t* state) {
     wclear(w);
     draw_rect_rline(w, mid_row - 7, mid_col - 28, 14, 62);
     for(int i = 0; i < 12; i++) {
-        if(i == state->current) {
+        if(i == (int)state->current) {
             wattron(w, A_BOLD);
             wattron(w, A_REVERSE);
         }
@@ -188,7 +186,7 @@ void ipv4_tui_draw(ipv4tui_state_t* state) {
             default:
                 break;
         }
-        if(i == state->current) {
+        if(i == (int)state->current) {
             wattroff(w, A_BOLD);
             wattroff(w, A_REVERSE);
         }
@@ -200,7 +198,6 @@ void ipv4_tui(WINDOW* window, uint8_t* bytes) {
     ipv4_t ipv4;
     ipv4tui_state_t state;
     int stop;
-    int key;
 
     state.window = window;
     ipv4_from_bytes(bytes, &ipv4);

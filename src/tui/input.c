@@ -1,19 +1,19 @@
 #include "../../include/tui/input.h"
 
 
-unsigned long long get_input_value(char* str, size_t len, enum InputMode mode) {
+unsigned long long get_input_value(char* str, enum InputMode mode) {
     unsigned long long value;
 
     value = 0;
     switch(mode) {
         case BINARY:
-            value = bin2dec(str, len);
+            value = strtoull(str, NULL, 2);
             break;
         case HEXADECIMAL:
-            value = hex2dec(str, len);
+            value = strtoull(str, NULL, 16);
             break;
         case DECIMAL:
-            value = atoi(str);
+            value = strtoull(str, NULL, 10);
             break;
         default:
             break;
@@ -41,8 +41,11 @@ int set_input(input_state_t* input_state, char* new_input) {
     size_t length;
 
     length = strlen(new_input);
-    if(input_state->mode != ALL && input_state->max != 0 && get_input_value(new_input, length, input_state->mode) > input_state->max)
+    if(input_state->mode != ALL && input_state->max != 0 && get_input_value(new_input, input_state->mode) > input_state->max) {
+        mvwprintw(input_state->window, 0, 0, "Value to big");
         return 0;
+    }
+    mvwprintw(input_state->window, 0, 0, "            ");
     memcpy(input_state->input, new_input, length + 1);
     memset(input_state->input + length + 1, 0, input_state->length_limit - length);
     input_state->length = length;
@@ -94,7 +97,7 @@ void switch_mode_down(input_state_t* input_state) {
             input_state->mode = HEXADECIMAL;
             if(input_state->length == 0)
                 break;
-            value = bin2dec(input_state->input, input_state->length);
+            value = strtoull(input_state->input, NULL, 2);
             temp = dec2hex(value, -1);
             set_input(input_state, temp);
             free(temp);
@@ -103,7 +106,7 @@ void switch_mode_down(input_state_t* input_state) {
             input_state->mode = DECIMAL;
             if(input_state->length == 0)
                 break;
-            value = hex2dec(input_state->input, input_state->length);
+            value = strtoull(input_state->input, NULL, 16);
             temp = malloc((input_state->length_limit + 1) * sizeof(char));
             snprintf(temp, input_state->length_limit + 1, "%lld", value);
             set_input(input_state, temp);
@@ -112,7 +115,7 @@ void switch_mode_down(input_state_t* input_state) {
             input_state->mode = BINARY;
             if(input_state->length == 0)
                 break;
-            value = atoi(input_state->input);
+            value = strtoull(input_state->input, NULL, 10);
             temp = dec2bin(value, -1);
             set_input(input_state, temp);
             free(temp);
@@ -158,42 +161,46 @@ void draw_base_convertion(int y, int x, input_state_t* input_state) {
     }
     switch(input_state->mode) {
         case BINARY:
-            value = bin2dec(input_state->input, input_state->length);
+            value = strtoull(input_state->input, NULL, 2);
             hex = dec2hex(value, -1);
             mvwprintw(w, y + 4, x, "Dec: %lld", value);
             if(!hex)
                 mvwprintw(w, y + 5, x, "Hex: ERROR");
-            else
+            else {
                 mvwprintw(w, y + 5, x, "Hex: 0x%s", hex);
+                free(hex);
+            }
             mvwprintw(w, y + 6, x, "Bin: %s", input_state->input);
-            free(hex);
             break;
         case HEXADECIMAL:
-            value = hex2dec(input_state->input, input_state->length);
+            value = strtoull(input_state->input, NULL, 16);
             bin = dec2bin(value, -1);
             mvwprintw(w, y + 4, x, "Dec: %lld", value);
             mvwprintw(w, y + 5, x, "Hex: 0x%s", input_state->input);
             if(!bin)
                 mvwprintw(w, y + 6, x, "Bin: ERROR");
-            else
+            else {
                 mvwprintw(w, y + 6, x, "Bin: %s", bin);
-            free(bin);
+                free(bin);
+            }
             break;
         case DECIMAL:
-            value = atoi(input_state->input);
+            value = strtoull(input_state->input, NULL, 10);
             bin = dec2bin(value, -1);
             hex = dec2hex(value, -1);
             mvwprintw(w, y + 4, x, "Dec: %lld", value);
             if(!hex)
                 mvwprintw(w, y + 5, x, "Hex: ERROR");
-            else
+            else {
                 mvwprintw(w, y + 5, x, "Hex: 0x%s", hex);
+                //free(hex);
+            }
             if(!bin)
                 mvwprintw(w, y + 6, x, "Bin: ERROR");
-            else
+            else {
                 mvwprintw(w, y + 6, x, "Bin: %s", bin);
-            free(bin);
-            free(hex);
+                //free(bin);
+            }
             break;
         case ALL:
             mvwprintw(w, y + 3, x, "Mode: ALL");
@@ -348,13 +355,13 @@ uint64_t chui_input_int(WINDOW* window,
     chui_input(window, y, x, width, title, init, width, max, mode, &input_state);
     switch(input_state.mode) {
         case BINARY:
-            out = bin2dec(input_state.input, input_state.length);
+            out = strtoull(input_state.input, NULL, 2);
             break;
         case HEXADECIMAL:
-            out = hex2dec(input_state.input, input_state.length);
+            out = strtoull(input_state.input, NULL, 16);
             break;
         case DECIMAL:
-            out = atoi(input_state.input);
+            out = strtoull(input_state.input, NULL, 10);
             break;
         default:
             break;

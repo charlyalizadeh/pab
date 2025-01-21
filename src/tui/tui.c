@@ -40,7 +40,6 @@ void main_menu(void) {
     packet_path = chui_input_str(stdscr, row / 2, col / 2 - width / 2, width, title, "", width, 0, ALL);
     if(!packet_path)
         return;
-    printf("YO\n");
     buffer = read_bytes(packet_path);
     /* Protocol */
     protocol = chui_select(stdscr, row / 2, col / 2 - 4, "Select protocol", (char*[3]){"IPv4", "TCP", "UDP"}, 3);
