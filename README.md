@@ -1,12 +1,8 @@
-# Packet App Builder
+# CHP
 
-Hobby project where I implement Network Packet and a TUI (Terminal User Interface) to manipulate them.  
-The TUI uses ncurses.
+Hobby project where I implement Network Protocoles.
 
 Supports:  
 - [ ] UDP
 - [X] IP
 - [ ] TCP
-
-
-# Video
