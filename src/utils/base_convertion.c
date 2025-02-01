@@ -70,3 +70,27 @@ char* dec2bin(unsigned long long in, int size) {
 char* dec2dec(unsigned long long in, int size) {
     return dec2base(in, size, "0123456789", 10);
 }
+
+void dec2base_print_re(unsigned long long in, char* base, size_t baselen) {
+	if(in < baselen) {
+		printf("%c", base[in]);
+        return;
+    }
+	dec2base_print_re(in / baselen, base, baselen);
+	dec2base_print_re(in % baselen, base, baselen);
+}
+void dec2base_print(unsigned long long in, int size, char* base, size_t baselen) {
+    int ndigit;
+    int trailing_zero;
+
+    ndigit = get_ndigit_base(in, baselen);
+    if(size < ndigit)
+        size = ndigit;
+    trailing_zero = size == - 1 ? 0 : size - ndigit;
+    for(int i = 0; i < trailing_zero; i++)
+        printf("0");
+    dec2base_print_re(in, base, baselen);
+}
+void dec2bin_print(unsigned long long in, int size) {
+    dec2base_print(in, size, "01", 2);
+}
